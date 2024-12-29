@@ -181,11 +181,51 @@ const upateDetails = asyncHandler(async(req,res)=>{
     )
 })
 
+const refreshAccessToken = asyncHandler(async(req,res)=>{
+    const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken
+    if(!incomingRefreshToken){
+        throw new ApiError(401,"unathorized request");
+    }
+    try {
+        const decodedtoken = jwt.verify(incomingRefreshToken,process.env.REFRESH_TOKEN_SECRET)    
+        const user =  User.findById(decodedtoken?._id)
+        if(!user){
+            throw new ApiError(401,"user not found by refresh token")
+        }
+        if(incomingRefreshToken != user?.refreshToken){
+            throw new ApiError(400," refresh token does not match -> Invalid refresh token ")
+        }
+        // now updating the tokens
+        const option = {
+            httpOnly:true,
+            secure:true
+        }
+        const {accessToken,newrefreshToken}= await generateAccessTokenandRefreshToken(user._id);
+        return res.
+        status(200)
+        .cookie("accessToken",accessToken,option)
+        .cookie("refreshToken",newrefreshToken,option)
+        .json(
+            new ApiResponse(
+                200,
+                {
+                    accessToken,
+                    refreshToken:newrefreshToken
+                },
+                " access token updated"
+            )
+        )
+    } catch (error) {
+        throw new ApiError(400,`INVALID REFRESH TOKEN ${error.message} `)
+    }
+
+})  
 
 export{
     registeruser,
     loginuser,
     logoutuser,
     changeCurrentPassword,
-    upateDetails 
+    upateDetails,
+    refreshAccessToken
 }

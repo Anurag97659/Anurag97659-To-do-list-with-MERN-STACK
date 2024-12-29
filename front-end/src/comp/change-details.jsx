@@ -1,19 +1,19 @@
 import React,{ useState } from "react";
-import { Link } from "react-router-dom";
 
-function Login() {
-   const [username, setusername] = useState('');
-    const [password, setpassword] = useState('');
+function ChangePassword() {
+  const [username, setUsername] = useState("");
+  const[email,setEmail]=useState("");
+  const[fullname,setFullname]=useState("");
     const submit = (e) => {
-      e.preventDefault();
-      console.log( password, username);
+        e.preventDefault();
+       
       try {
-        fetch('http://localhost:8000/anuragnidhi-tdl/2005/v1/users/login', {
+        fetch('http://localhost:8000/anuragnidhi-tdl/2005/v1/users/updateDetails', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ username, password}),
+            body: JSON.stringify({ username, email, fullname}),
             credentials: 'include',
         })
             .then((res) => res.json())
@@ -21,12 +21,12 @@ function Login() {
                 if (data.error) {
                     alert(data.error);
                 } else {
-                    alert('login successful');
-                    window.location.href = '/todolist';
+                    alert('Details changed successful');
+                    window.location.href = '/login';
                 }
             })
             .catch((error) => {
-                alert("login failed file login.jsx error");
+                alert("password change failed file change-password.jsx error");
             });
     
     } catch (error) {
@@ -34,11 +34,13 @@ function Login() {
         
     }
     }
+  
+   
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
       <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-6">
         <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-          Login
+          Update Details
         </h2>
         <form onSubmit={submit} id="form" className="space-y-4">
           <div>
@@ -46,15 +48,15 @@ function Login() {
               htmlFor="uname"
               className="block text-sm font-medium text-gray-700"
             >
-              Username
+                Username
             </label>
             <input
               type="text"
-              id="username"
+              id="old"
               placeholder="Enter Username"
               name="uname"
               value={username}
-              onChange={(e) => setusername(e.target.value)}
+              onChange={(e) => setUsername(e.target.value)}
               required
               className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
             />
@@ -65,15 +67,34 @@ function Login() {
               htmlFor="psw"
               className="block text-sm font-medium text-gray-700"
             >
-              Password
+                Email
             </label>
             <input
-              type="password"
-              id="password"
-              placeholder="Enter Password"
+              type="text"
+              id="new email"
+              placeholder="Enter Email"
               name="psw"
-              value={password}
-              onChange={(e) => setpassword(e.target.value)}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="pswc"
+              className="block text-sm font-medium text-gray-700"
+            >
+                Full Name
+            </label>
+            <input
+              type="text"
+              id="fullname"
+              placeholder="Enter fullname"
+              name="pswc"
+              value={fullname}
+              onChange={(e) => setFullname(e.target.value)}
               required
               className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
             />
@@ -83,16 +104,11 @@ function Login() {
             type="submit"
             className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition duration-200"
           >
-            Login
+            Udate Details
           </button>
         </form>
 
-        <p className="mt-4 text-center text-sm text-gray-600">
-          Create account{" "}
-          <Link to="/registration" className="text-blue-500 hover:underline">
-            Sign Up
-          </Link>
-        </p>
+        
       </div>
 
       
@@ -100,4 +116,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default  ChangePassword;
