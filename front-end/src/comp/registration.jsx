@@ -6,6 +6,7 @@ function REGISTRATION() {
   const [password, setpassword] = useState('');
   const [fullname, setfullname] = useState('');
   const [username, setusername] = useState('');
+  // console.log(email);
   const submit = (e) => {
     e.preventDefault();
     console.log(email, password, fullname, username);
